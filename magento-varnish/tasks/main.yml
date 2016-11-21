@@ -1,0 +1,24 @@
+---
+- name: INSTALL | varnish package
+  apt:
+    name: varnish
+    state: latest
+
+- name: CONFIG | varnish defaults
+  copy:
+    src: varnish.conf
+    dest: /etc/systemd/system/multi-user.target.wants/varnish.service
+
+- name: CONFIG | magento vcl
+  copy:
+    src: magento.vcl
+    dest: /etc/varnish/magento.vcl
+
+- name: SERVICE | Reconfigure systemd
+  command: systemctl daemon-reload
+
+- name: SERVICE | start & enable varnish
+  service:
+    name: varnish
+    state: started
+    enabled: yes
